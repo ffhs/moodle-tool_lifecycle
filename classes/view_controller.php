@@ -54,8 +54,8 @@ class view_controller {
     public function handle_view($renderer, $filterdata, $bulk) {
         global $DB;
 
-        // Get all courses where current user is manager. Sysadmin rights ignored.
-        $courses = get_user_capability_course('tool/lifecycle:managecourses', null, false);
+        // Get all courses where current user is manager. Sysadmin rights are not ignored.
+        $courses = get_user_capability_course('tool/lifecycle:managecourses');
         if (!$courses) {
             $courses = [['id' => 0]];
         }
@@ -79,8 +79,7 @@ class view_controller {
         foreach ($processes as $process) {
             $step = step_manager::get_step_instance($process->stepinstanceid);
             if ($capability = (interaction_manager::get_relevant_capability($step->subpluginname) ?? false)) {
-                $capabilityok = has_capability($capability, \context_course::instance($process->courseid),
-                    null, false);
+                $capabilityok = has_capability($capability, \context_course::instance($process->courseid));
             } else {
                 $capabilityok = true;
             }
