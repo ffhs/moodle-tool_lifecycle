@@ -54,12 +54,11 @@ class view_controller {
     public function handle_view($renderer, $filterdata, $bulk) {
         global $DB, $USER;
 
-        // Get all courses where current user is manager and is enrolled.
-        // Sysadmins will always have the capability, but only courses in which they are enrolled will be returned.
+        // Get all courses where current user is manager.
         $courses = array_map(
             fn($courselistitem) => $courselistitem->id,
             \core_course_category::search_courses(
-                ['limittoenrolled' => true],
+                ['limittoenrolled' => false],
                 [],
                 ['tool/lifecycle:managecourses']
             )
