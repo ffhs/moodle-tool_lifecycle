@@ -52,23 +52,14 @@ class view_controller {
      * @throws \invalid_parameter_exception
      */
     public function handle_view($renderer, $filterdata, $bulk) {
-        global $DB, $USER;
+        global $DB;
 
-        // Get all courses where current user is manager and is enrolled.
-        // Sysadmins will always have the capability, but only courses in which they are enrolled will be returned.
-        $courses = array_map(
-            fn($courselistitem) => $courselistitem->id,
-            \core_course_category::search_courses(
-                ['limittoenrolled' => true],
-                [],
-                ['tool/lifecycle:managecourses']
-            )
-        );
+        // Get all courses where current user is manager. Sysadmin rights ignored.
+        $courses = get_user_capability_course('tool/lifecycle:managecourses', null, false);
         if (!$courses) {
-            echo 'no courses';
-            // Software enhancement show error.
-            return;
+            $courses = [['id' => 0]];
         }
+        $courses = array_column($courses, 'id');
 
         // Select all processes of these courses.
         [$insql, $inparams] = $DB->get_in_or_equal($courses);
