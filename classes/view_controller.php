@@ -87,8 +87,7 @@ class view_controller {
         foreach ($processes as $process) {
             $step = step_manager::get_step_instance($process->stepinstanceid);
             if ($capability = (interaction_manager::get_relevant_capability($step->subpluginname) ?? false)) {
-                $capabilityok = has_capability($capability, \context_course::instance($process->courseid),
-                    null, false);
+                $capabilityok = has_capability($capability, \context_course::instance($process->courseid));
             } else {
                 $capabilityok = true;
             }
